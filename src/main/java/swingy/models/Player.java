@@ -1,13 +1,16 @@
 package swingy.models;
 
+import com.mysql.cj.x.protobuf.MysqlxDatatypes;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.ArrayList;
+import java.util.Set;
 
 
-import javax.validation.Valid;
+import javax.validation.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -15,6 +18,7 @@ import javax.validation.constraints.NotNull;
 public class Player
 {
     @NotNull
+    @Size(min = 4, message = "Player name length should be equals to 3 or greater")
     private String name;
 
     @NotNull
@@ -30,7 +34,7 @@ public class Player
 
     @NotNull
     @Valid
-    private ArrayList<Artifact> artifacts;
+    private ArrayList<Artifact> artifacts = new ArrayList<>();
 
     @NotNull
     @Min(value = 0, message = " Hit point must be not less than zero")
@@ -44,6 +48,30 @@ public class Player
     @Min(value = 0, message = "Attack point must not be less than zero")
     private  int attackPoint;
 
+    public Player(sting name, string type, int level, int exp, int defencePoint, int attackPoint, int hitPoint)
+    {
+        this.name = name;
+        this.type = type;
+        this.level = level;
+        this.exp = exp;
+        this.hitPoint = hitPoint;
+        this.defencePoint = defencePoint;
+        this.attackPoint = attackPoint;
+    }
 
+    public boolean isValid()//(GameController controller)
+    {
+            ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+            Validator validator = factory.getValidator();
 
+            Set<ConstraintViolation<Player>> constraintViolations = validator.validate(this);
+            if (constraintViolations.size() > 0 )
+            {
+                //todo we'll come back to this
+                //for (ConstraintViolation<Player> constraints : constraintViolations)
+                 //   controller.getErrors().add("Error :" + constraints.getMessage());
+                return (false);
+            }
+            return (true);
+    }
 }
