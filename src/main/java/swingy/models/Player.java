@@ -38,25 +38,25 @@ public class Player
 
     @NotNull
     @Min(value = 0, message = " Hit point must be not less than zero")
-    private int hitPoint;
+    private int hitPoints;
 
     @NotNull
     @Min(value = 0, message = "Defence point must not be less than zero")
-    private  int defencePoint;
+    private  int defencePoints;
 
     @NotNull
     @Min(value = 0, message = "Attack point must not be less than zero")
-    private  int attackPoint;
+    private  int attackPoints;
 
-    public Player(sting name, string type, int level, int exp, int defencePoint, int attackPoint, int hitPoint)
+    public Player(String name, String type, int level, int exp, int defencePoint, int attackPoint, int hitPoint)
     {
         this.name = name;
         this.type = type;
         this.level = level;
         this.exp = exp;
-        this.hitPoint = hitPoint;
-        this.defencePoint = defencePoint;
-        this.attackPoint = attackPoint;
+        this.hitPoints = hitPoint;
+        this.defencePoints = defencePoint;
+        this.attackPoints = attackPoint;
     }
 
     public boolean isValid()//(GameController controller)

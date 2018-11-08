@@ -9,7 +9,8 @@ import java.util.ArrayList;
 public class DataController
 {
 
-    private static Connection getConnection()
+
+    private Connection getConnection()
     {
         Connection connection = null;
         try
@@ -28,14 +29,14 @@ public class DataController
         return (connection);
     }
 
-    public static void createDatabase()
+    public void createDatabase()
     {
         Connection connection = null;
         try
         {
             connection = getConnection();
             Statement  statement = connection.createStatement();
-            String create = "create database swingy";
+            String create = "create database if not exists swingy";
             statement.executeUpdate(create);
         }
         catch (SQLException ex)
@@ -55,7 +56,7 @@ public class DataController
         }
     }
 
-    public static void initDatabase()
+    public void initDatabase()
     {
         Connection connection = null;
         try
@@ -92,12 +93,12 @@ public class DataController
         }
     }
 
-    public static ArrayList<Player> getAllPlayers()
+    public ArrayList<Player> getAllPlayers()
     {
 
         ArrayList<Player>  allPlayers = new ArrayList<>();
 
-        Connention connection = null;
+        Connection connection = null;
         try
         {
             connection = getConnection();
@@ -119,7 +120,7 @@ public class DataController
                     allPlayers.add(player);
             }
         }
-        catch(SqlException ex)
+        catch(SQLException ex)
         {
             ex.printStackTrace();
         }
@@ -130,19 +131,18 @@ public class DataController
                 if (connection != null)
                     connection.close();
             }
-            catch (SqlException ex)
+            catch (SQLException ex)
             {
-                ex.printStaclTrace();
+                ex.printStackTrace();
             }
 
         }
-
         return (allPlayers);
     }
 
-    public static void savePlayer(Player player)
+    public void savePlayer(Player player)
     {
-        Connention connection = null;
+        Connection connection = null;
         try
         {
             connection = getConnection();
@@ -154,15 +154,15 @@ public class DataController
                     player.getType(),
                     player.getLevel(),
                     player.getExp(),
-                    player.getAttachPoints(),
-                    player.getDeffencePoints(),
+                    player.getAttackPoints(),
+                    player.getDefencePoints(),
                     player.getHitPoints()
             );
             statement.executeUpdate(save);
         }
-        catch(SqlException ex)
+        catch(SQLException ex)
         {
-            ex.printStackTrace(s);
+            ex.printStackTrace();
         }
         finally
         {
@@ -171,11 +171,10 @@ public class DataController
                 if (connection != null)
                     connection.close();
             }
-            catch (SqlException ex)
+            catch (SQLException ex)
             {
-                ex.printStaclTrace();
+                ex.printStackTrace();
             }
-
         }
     }
 }
