@@ -1,4 +1,7 @@
 package swingy.views.guiView;
 
-public class gui {
+import swingy.views.View;
+
+public class gui implements View
+{
 }

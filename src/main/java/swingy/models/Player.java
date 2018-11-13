@@ -48,7 +48,15 @@ public class Player
     @Min(value = 0, message = "Attack point must not be less than zero")
     private  int attackPoints;
 
-    public Player(String name, String type, int level, int exp, int defencePoint, int attackPoint, int hitPoint)
+    @NotNull
+    @Min(value = 0, message = "x-coordinate can't be less than zero")
+    private int x;
+
+    @NotNull
+    @Min(value = 0, message = "y-coordinate can't be less than zero")
+    private int y;
+
+    public Player(String name, String type, int level, int exp, int defencePoint, int attackPoint, int hitPoint, int x, int y)
     {
         this.name = name;
         this.type = type;
@@ -57,6 +65,8 @@ public class Player
         this.hitPoints = hitPoint;
         this.defencePoints = defencePoint;
         this.attackPoints = attackPoint;
+        this.x = x;
+        this.y = y;
     }
 
     public boolean isValid()//(GameController controller)

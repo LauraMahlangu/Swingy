@@ -72,7 +72,10 @@ public class DataController
                             "`exp` INT NOT NULL , " +
                             "`attackPoints` INT NOT NULL , " +
                             "`defensePoints` INT NOT NULL , " +
-                            "`hitPoints` INT NOT NULL);";
+                            "`hitPoints` INT NOT NULL," +
+                            "`x` INT NOT NULL," +
+                            "`y` INT NOT NULL);";
+
             statement.executeUpdate(createTable);
         }
         catch (SQLException ex)
@@ -115,7 +118,9 @@ public class DataController
                 int attackPoints = results.getInt("attackPoints");
                 int defensePoints = results.getInt("defensePoints");
                 int hitPoints = results.getInt("hitPoints");
-                Player player = new Player(name, type, level, exp, defensePoints, attackPoints, hitPoints);
+                int x = results.getInt("x");
+                int y = results.getInt("y");
+                Player player = new Player(name, type, level, exp, defensePoints, attackPoints, hitPoints, x, y);
                 if (player.isValid() != false)
                     allPlayers.add(player);
             }
@@ -148,15 +153,17 @@ public class DataController
             connection = getConnection();
             Statement statement = connection.createStatement();
             String save = String.format("INSERT INTO `swingy`.`players` (`name`, `type`, `level`, `exp`," +
-                            " `attackPoints`, `defencePoint`, `hitPints`) " +
-                            " VALUES ('%s', '%s', %d, %d, %d, %d, %d)",
+                            " `attackPoints`, `defencePoint`, `hitPints`, `x`, `y`) " +
+                            " VALUES ('%s', '%s', %d, %d, %d, %d, %d, %d, %d)",
                     player.getName(),
                     player.getType(),
                     player.getLevel(),
                     player.getExp(),
                     player.getAttackPoints(),
                     player.getDefencePoints(),
-                    player.getHitPoints()
+                    player.getHitPoints(),
+                    player.getX(),
+                    player.getY()
             );
             statement.executeUpdate(save);
         }
