@@ -18,10 +18,11 @@ import javax.validation.constraints.Size;
 public class Player
 {
     @NotNull
-    @Size(min = 4, message = "Player name length should be equals to 3 or greater")
+    @Size(min = 4, message = "Player name length should be equals to 4 or greater")
     private String name;
 
     @NotNull
+    @Size(min = 5, message = "Player class length should be equals to 5 or greater")
     private String type;
 
     @NotNull
@@ -34,7 +35,7 @@ public class Player
 
     @NotNull
     @Valid
-    private ArrayList<Artifact> artifacts = new ArrayList<>();
+    private ArrayList<Artifact> artifacts;
 
     @NotNull
     @Min(value = 0, message = " Hit point must be not less than zero")
@@ -56,7 +57,11 @@ public class Player
     @Min(value = 0, message = "y-coordinate can't be less than zero")
     private int y;
 
-    public Player(String name, String type, int level, int exp, int defencePoint, int attackPoint, int hitPoint, int x, int y)
+    @NotNull
+    @Min(value = 0, message = "map cant be smaller than 0")
+    private int mapSize;
+
+    public Player(String name, String type, int level, int exp, int defencePoint, int attackPoint, int hitPoint, int x, int y, int mapSize)
     {
         this.name = name;
         this.type = type;
@@ -67,21 +72,7 @@ public class Player
         this.attackPoints = attackPoint;
         this.x = x;
         this.y = y;
-    }
-
-    public boolean isValid()//(GameController controller)
-    {
-            ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-            Validator validator = factory.getValidator();
-
-            Set<ConstraintViolation<Player>> constraintViolations = validator.validate(this);
-            if (constraintViolations.size() > 0 )
-            {
-                //todo we'll come back to this
-                //for (ConstraintViolation<Player> constraints : constraintViolations)
-                 //   controller.getErrors().add("Error :" + constraints.getMessage());
-                return (false);
-            }
-            return (true);
+        this.mapSize = mapSize;
+        artifacts = new ArrayList<>();
     }
 }

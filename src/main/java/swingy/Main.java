@@ -21,6 +21,6 @@ public class Main
             System.exit(0);
         }
         GameController gameController = new GameController(isConsole);
-        gameController.playGame();
+        gameController.renderStage();
     }
 }

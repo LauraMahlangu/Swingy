@@ -11,19 +11,17 @@ import java.util.ArrayList;
 @Setter
 public class GameState
 {
-    private int mapSize;
     private char map[][];
     private Player player;
     private ArrayList<Player> enemies;
     private Point previous_pos;
 
 
-    public GameState(int mapSize, char[][] map, Player player, ArrayList<Player> enemies, Point previous_pos)
+    public GameState(Player player, ArrayList<Player> enemies)
     {
-        this.mapSize = mapSize;
-        this.map = map;
+        this.map = new char[player.getMapSize()][player.getMapSize()];
         this.player = player;
         this.enemies = enemies;
-        this.previous_pos = previous_pos;
+        this.previous_pos = new Point(player.getMapSize() / 2,player.getMapSize()/ 2);
     }
 }

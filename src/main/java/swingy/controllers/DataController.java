@@ -50,7 +50,8 @@ public class DataController
                 if (connection != null)
                     connection.close();
             }
-            catch (SQLException ex) {
+            catch (SQLException ex)
+            {
                 ex.printStackTrace();
             }
         }
@@ -74,7 +75,8 @@ public class DataController
                             "`defensePoints` INT NOT NULL , " +
                             "`hitPoints` INT NOT NULL," +
                             "`x` INT NOT NULL," +
-                            "`y` INT NOT NULL);";
+                            "`y` INT NOT NULL," +
+                            "`mapSize` INT NOT NULL);";
 
             statement.executeUpdate(createTable);
         }
@@ -96,7 +98,7 @@ public class DataController
         }
     }
 
-    public ArrayList<Player> getAllPlayers()
+    public static ArrayList<Player> getAllPlayers()
     {
 
         ArrayList<Player>  allPlayers = new ArrayList<>();
@@ -120,9 +122,9 @@ public class DataController
                 int hitPoints = results.getInt("hitPoints");
                 int x = results.getInt("x");
                 int y = results.getInt("y");
-                Player player = new Player(name, type, level, exp, defensePoints, attackPoints, hitPoints, x, y);
-                if (player.isValid() != false)
-                    allPlayers.add(player);
+                int mapSize = results.getInt("mapSize");
+                Player player = new Player(name, type, level, exp, defensePoints, attackPoints, hitPoints, x, y, mapSize);
+                allPlayers.add(player);
             }
         }
         catch(SQLException ex)
@@ -145,7 +147,7 @@ public class DataController
         return (allPlayers);
     }
 
-    public void savePlayer(Player player)
+    public static void savePlayer(Player player)
     {
         Connection connection = null;
         try
@@ -153,8 +155,8 @@ public class DataController
             connection = getConnection();
             Statement statement = connection.createStatement();
             String save = String.format("INSERT INTO `swingy`.`players` (`name`, `type`, `level`, `exp`," +
-                            " `attackPoints`, `defencePoint`, `hitPints`, `x`, `y`) " +
-                            " VALUES ('%s', '%s', %d, %d, %d, %d, %d, %d, %d)",
+                            " `attackPoints`, `defencePoint`, `hitPints`, `x`, `y`, `mapSize`) " +
+                            " VALUES ('%s', '%s', %d, %d, %d, %d, %d, %d, %d, %d)",
                     player.getName(),
                     player.getType(),
                     player.getLevel(),
@@ -163,7 +165,8 @@ public class DataController
                     player.getDefencePoints(),
                     player.getHitPoints(),
                     player.getX(),
-                    player.getY()
+                    player.getY(),
+                    player.getMapSize()
             );
             statement.executeUpdate(save);
         }
