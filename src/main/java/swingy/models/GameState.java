@@ -13,15 +13,15 @@ public class GameState
 {
     private char map[][];
     private Player player;
-    private ArrayList<Player> enemies;
-    private Point previous_pos;
+    private ArrayList<Enemy> enemies;
+    private Point previousPosition;
 
 
-    public GameState(Player player, ArrayList<Player> enemies)
+    public GameState(Player player, ArrayList<Enemy> enemies)
     {
         this.map = new char[player.getMapSize()][player.getMapSize()];
         this.player = player;
         this.enemies = enemies;
-        this.previous_pos = new Point(player.getMapSize() / 2,player.getMapSize()/ 2);
+        this.previousPosition = new Point(player.getMapSize() / 2,player.getMapSize()/ 2);
     }
 }

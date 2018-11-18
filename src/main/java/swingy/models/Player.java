@@ -61,6 +61,8 @@ public class Player
     @Min(value = 0, message = "map cant be smaller than 0")
     private int mapSize;
 
+
+    public  Player(){}
     public Player(String name, String type, int level, int exp, int defencePoint, int attackPoint, int hitPoint, int x, int y, int mapSize)
     {
         this.name = name;

@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class PlayerFactory
 {
-    public static Player createPlayer(ArrayList<String> details)
+    public static Player createPlayer(ArrayList<String> details, GameController controller)
     {
         String name = details.get(0);
         String type = details.get(1);
@@ -48,7 +48,7 @@ public class PlayerFactory
         x = mapSize / 2;
         y = mapSize / 2;
         Player hero = new Player(name, type, level, exp, defencePoints, attackPoints, hitPoints, x, y, mapSize);
-        if (isValid(hero))
+        if (isValid(hero, controller))
             return (hero);
         else
             return (null);
@@ -66,10 +66,14 @@ public class PlayerFactory
         int mapSize = Integer.parseInt(details.get(7));
         int x = Integer.parseInt(details.get(8));
         int y = Integer.parseInt(details.get(9));
+        Player hero = new Player(name, type, level, exp, defencePoints, attackPoints, hitPoints, x, y, mapSize);
+        return (hero);
     }
 
-    public static boolean isValid(Player hero)
+    public static boolean isValid(Player hero, GameController controller)
     {
+        if (hero == null)
+            return false;
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
 
@@ -77,7 +81,7 @@ public class PlayerFactory
         if (constraintViolations.size() > 0 )
         {
             for (ConstraintViolation<Player> constraints : constraintViolations)
-               GameController.errors.add("Error :" + constraints.getMessage());
+               controller.getErrors().add("Error :" + constraints.getMessage());
             return (false);
         }
         return (true);

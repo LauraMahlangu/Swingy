@@ -21,19 +21,19 @@ public class Console implements View
     {
         //todo add if-statements for all stages later. the view must know which functions to run for each stage
         if (stages == Stages.WELCOME)
-        ; //displayWelcomeView();
+            displayWelcomeView();
         else if (stages == Stages.CREATEPLAYER)
             displayCreatePlayerView();
         else if (stages == Stages.DISPLAYERRORS)
             displayErrorView();
         else if (stages == Stages.SELECTPLAYER)
-            ;//displaySelectPlayerView()
+            displaySelectPlayerView();
         else if (stages == Stages.DISPLAYFORCEDFIGHT)
             ;//displayForcedFightView();
         else if (stages == Stages.DISPLAYFIGHTORRUN)
             ;//displayDisplayFightToRun();
         else if (stages == Stages.DISPLAYMAP)
-            ;//displayMapView();
+            displayMapView();
         else if (stages == Stages.GAMEOVER)
             ;//displayGameOver();
         else
@@ -47,13 +47,10 @@ public class Console implements View
         ArrayList<String> details = new ArrayList<>();
         String name = "";
         String type = "";
+        System.out.print("Hero name: ");
         Scanner userInput = new Scanner(System.in);
-        if (userInput.hasNext())
-        {
-            System.out.print("Hero name: ");
+        if (userInput.hasNextLine())
             name = userInput.nextLine();
-            System.out.println();
-        }
         else
             System.exit(0);
         System.out.println("\n               Select Hero Class\n"
@@ -63,7 +60,7 @@ public class Console implements View
         while (type.equals(""))
         {
             System.out.print("\nChoice: ");
-            if (userInput.hasNext())//checks if we can type in something with the keyboard. if we cant, we exit the game
+            if (userInput.hasNextLine())//checks if we can type in something with the keyboard. if we cant, we exit the game
                 type = userInput.nextLine();
             else
                 System.exit(0);
@@ -93,11 +90,8 @@ public class Console implements View
     public Player getPlayerFromSavedPlayers(ArrayList<Player> savedPlayers)
     {
 
-        Player player = null;
+        Player selectedPlayer = null;
 
-        System.out.println("\n*********************************************************************************\n" +
-                                 "*                              Select a saved player                           *\n" +
-                                 "********************************************************************************\n");
         int index = 1;
         for (Player player : savedPlayers)
         {
@@ -112,12 +106,15 @@ public class Console implements View
                     +  ", X coordinates: " + player.getX()
                     +  ", Y coordinates: " + player.getY()
                     +  ", MapSize: " + player.getMapSize());
+            index++;
         }
+        System.out.println("b - Back");
         String choice = "";
         Scanner userInput = new Scanner(System.in);
         while (choice == "")
         {
-            if (userInput.hasNext())
+            System.out.print("Choice: ");
+            if (userInput.hasNextLine())
                 choice = userInput.nextLine();
             else
                 System.exit(0);
@@ -125,17 +122,65 @@ public class Console implements View
             {
                 int selectedIndex = Integer.parseInt(choice);
                 if (selectedIndex >= 1 &&  selectedIndex <= savedPlayers.size())
-                    player = savedPlayers.get(selectedIndex - 1);
+                    selectedPlayer = savedPlayers.get(selectedIndex - 1);
                 else
                     choice = "";
+            }
+            else  if (choice.equals("b"))
+            {
+                selectedPlayer = null;
             }
             else
                 choice ="";
         }
-        return (player);
+        return (selectedPlayer);
     }
 
-    public void displayWelcomeView(){}
+    public void displayWelcomeView()
+    {
+        System.out.println("\n\n" +
+                " _       _  ___    _      ___    _____         ___       _____  _____     _      _____  _   _  ___    _____  _  ___   \n" +
+                "( )  _  ( )(  _`\\ ( )    (  _`\\ (  _  )/'\\_/`\\(  _`\\    (_   _)(  _  )   ( )    (  _  )( ) ( )|  _`\\ (  _  )( )(  _`\\ \n" +
+                "| | ( ) | || (_(_)| |    | ( (_)| ( ) ||     || (_(_)     | |  | ( ) |   | |    | (_) || | | || (_) )| (_) ||/ | (_(_)\n" +
+                "| | | | | ||  _)_ | |  _ | |  _ | | | || (_) ||  _)_      | |  | | | |   | |  _ |  _  || | | || ,  / |  _  |   `\\__ \\ \n" +
+                "| (_/ \\_) || (_( )| |_( )| (_( )| (_) || | | || (_( )     | |  | (_) |   | |_( )| | | || (_) || |\\ \\ | | | |   ( )_) |\n" +
+                "`\\___x___/'(____/'(____/'(____/'(_____)(_) (_)(____/'     (_)  (_____)   (____/'(_) (_)(_____)(_) (_)(_) (_)   `\\____)\n" +
+                "                                                                                                                      \n" +
+                "                                                                                                                      \n" +
+                "                                           ___    _       _  _  _   _  ___    _     _                                 \n" +
+                "                                          (  _`\\ ( )  _  ( )(_)( ) ( )(  _`\\ ( )   ( )                                \n" +
+                "                                          | (_(_)| | ( ) | || || `\\| || ( (_)`\\`\\_/'/'                                \n" +
+                "                                          `\\__ \\ | | | | | || || , ` || |___   `\\ /'                                  \n" +
+                "                                          ( )_) || (_/ \\_) || || |`\\ || (_, )   | |                                   \n" +
+                "                                          `\\____)`\\___x___/'(_)(_) (_)(____/'   (_)                                   \n" +
+                "                                                                                                                      \n" +
+                "                                                                                                                      \n");
+        System.out.println("1. Create Player\n"+
+                           "2. Select Saved Player\n");
+        String choice = "";
+        Scanner userInput = new Scanner(System.in);
+        int option = 0;
+        while (choice.equals(""))
+        {
+            System.out.print("Choice: ");
+            if (userInput.hasNextLine())
+            {
+                choice = userInput.nextLine();
+                if (choice.equals("1"))
+                    option = 1;
+                else if (choice.equals("2"))
+                    option = 2;
+                else
+                {
+                    System.out.println("Invalid option selected");
+                    choice = "";
+                }
+            }
+            else
+                System.exit(0);
+        }
+        controller.processInput(option);
+    }
 
     private void displayCreatePlayerView()
     {
@@ -144,14 +189,87 @@ public class Console implements View
                 +   "*********************************************\n\n");
     }
 
-    public void displaySelectPlayerView(){}
-    public void displayMapView(){}
+    public void displaySelectPlayerView()
+    {
+        System.out.println("\n*********************************************************************************\n" +
+                "*                              Select a saved player                           *\n" +
+                "********************************************************************************\n");
+    }
+    public void displayMapView()
+    {
+        final String ANSI_RESET = "\u001B[0m";
+        final String ANSI_RED = "\u001B[31m";
+        final String ANSI_GREEN = "\u001B[32m";
+        //we print hero details
+        System.out.println(
+                "Name: " + controller.getGameState().getPlayer().getName()
+                + ", Class: " + controller.getGameState().getPlayer().getType()
+                + ", Level: " + controller.getGameState().getPlayer().getLevel()
+                +  ", EPR: " + controller.getGameState().getPlayer().getExp()
+                +  ", DefencePoints: " + controller.getGameState().getPlayer().getDefencePoints()
+                +  ", AttackPoints: " + controller.getGameState().getPlayer().getAttackPoints()
+                +  ", HitPoints: " + controller.getGameState().getPlayer().getHitPoints()
+                +  ", X coordinates: " + controller.getGameState().getPlayer().getX()
+                +  ", Y coordinates: " + controller.getGameState().getPlayer().getY()
+                +  ", MapSize: " + controller.getGameState().getPlayer().getMapSize()+"\n");
+
+        // we print the grid
+        for(int row = 0; row < controller.getGameState().getPlayer().getMapSize(); row++)
+        {
+            for(int col = 0; col < controller.getGameState().getPlayer().getMapSize(); col++)
+            {
+                if (controller.getGameState().getMap()[row][col] == '.')
+                    System.out.print("[ ]");
+                else if (controller.getGameState().getMap()[row][col] == 'H')
+                    System.out.print("[" + ANSI_GREEN + "H" + ANSI_RESET+ "]");
+                else
+                    System.out.print("[" + ANSI_RED + "E" + ANSI_RESET+ "]");
+            }
+            System.out.println();
+        }
+
+        // we print movement instructiions;
+        System.out.println("\nNorth: w\n" +
+                            "West: a\n" +
+                            "South: s\n" +
+                            "East: d\n"
+        );
+
+        //getting the choice
+        String choice = "";
+        Scanner userInput = new Scanner(System.in);
+        while (choice.equals(""))
+        {
+            System.out.print("Choice: ");
+            if (userInput.hasNextLine())
+            {
+                choice = userInput.nextLine();
+                if (choice.equals("w") || choice.equals("a") || choice.equals("s") || choice.equals("d"))
+                    break;
+            }
+            else
+            {
+                System.exit(0);
+            }
+        }
+        if (choice.equals("w"))
+            controller.processInput(1);
+        else if (choice.equals("a"))
+            controller.processInput(2);
+        else if (choice.equals("s"))
+            controller.processInput(3);
+        else
+            controller.processInput(4);
+    }
     public void displayErrorView()
     {
-        System.out.println("\n*******************************************************\n" +
-                           "*      Errors encountered when creating player        *\n" +
-                           "*******************************************************\n");
-        for (String error : GameController.errors)
+        if (controller.getErrors().size() != 0)//in case the user went back when selecting to go back.
+        {
+            System.out.println("\n*******************************************************\n" +
+                    "*      Errors encountered when creating player        *\n" +
+                    "*******************************************************\n");
+        }
+        for (String error : controller.getErrors())
         {
             System.out.println("#  " + error);
         }
@@ -162,8 +280,10 @@ public class Console implements View
             pressed = input.nextLine();
         else
             System.exit(0);
+        controller.getErrors().clear();
         controller.processInput(0);
     }
+
     public void displayForcedFightView(){}
     public void displayDisplayFightToRun(){}
     public void displayGameOver(){}

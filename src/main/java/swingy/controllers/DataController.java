@@ -10,13 +10,13 @@ public class DataController
 {
 
 
-    private Connection getConnection()
+    private static Connection getConnection()
     {
         Connection connection = null;
         try
         {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306", "root", "NKibSf67");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306?autoReconnect=true&useSSL=false", "root", "NKibSf67");
         }
         catch (ClassNotFoundException ex)
         {
