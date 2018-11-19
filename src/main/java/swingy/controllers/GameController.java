@@ -82,12 +82,49 @@ public class GameController
                     this.movePlayer(Directions.EAST);
                 this.updateMap();
                 renderStage();
+                if (gameState.isEnemyEncountered() == true)
+                {
+                    stage = Stages.DISPLAYFIGHTORRUN;
+                    renderStage();
+                }
                 break;
 
             case DISPLAYFIGHTORRUN:
+                gameState.setEnemyEncountered(false);//we've already encountered the enemy at this stage so its ok to set encountered back to false bcos its purpose is to get us to thus stge
+                if (value == 1)
+                {
+                    fight();
+                    stage = Stages.DISPLAYFORCEDFIGHT;
+                    renderStage();
+                }
+                else if (value == 2)
+                {
+                    if (this.fightOrRun() == true)
+                    {
+                        fight();
+                        stage = Stages.DISPLAYFORCEDFIGHT;
+                        renderStage();
+                    }
+                    else
+                    {
+                        gameState.getPlayer().setX((int)gameState.getPreviousPosition().getX());
+                        gameState.getPlayer().setY((int)gameState.getPreviousPosition().getY());
+                        updateMap();
+                        stage = Stages.DISPLAYMAP;
+                        renderStage();
+                    }
+                }
                 break;
 
             case DISPLAYFORCEDFIGHT:
+                if (value == 1)
+                {
+                    if (gameState.isGameOver())
+                        stage = Stages.GAMEOVER;
+                    else
+                        stage = Stages.DISPLAYMAP;
+                    renderStage();
+                }
                 break;
 
             case GAMEOVER:
@@ -168,19 +205,92 @@ public class GameController
                 gameState.getMap()[row][col] = '.';
             }
         }
-        gameState.getMap()[gameState.getPlayer().getY()][gameState.getPlayer().getX()] = 'H';
+
         for (Enemy enemy : gameState.getEnemies())
         {
             if (enemy.isAlive() == true)
                 gameState.getMap()[enemy.getY()][enemy.getX()] = 'E';
         }
+        if (gameState.getMap()[gameState.getPlayer().getY()][gameState.getPlayer().getX()] == 'E')
+            gameState.setEnemyEncountered(true);
+        gameState.getMap()[gameState.getPlayer().getY()][gameState.getPlayer().getX()] = 'H';
     }
 
    // private boolean isArtifactWon(){}
    // private String createBattleReport(){} todo will be done in report factory
    // private boolean isGameOver(){}
-    private void fight(){}
-    private void fightOrRUn(){}
+    private void fight()
+    {
+
+        Enemy enemyToFight = null;
+        Player hero = gameState.getPlayer();
+        for (Enemy enemy : gameState.getEnemies())
+        {
+            if (enemy.getX() == hero.getX() && enemy.getY() == hero.getY())
+                enemyToFight = enemy;
+        }
+
+        String tempReport = "\t\t"+hero.getName()+ "(" + hero.getType() + " : " + hero.getHitPoints() +"HP)  Verus " + enemyToFight.getName() + "(" + enemyToFight.getType() + " : " + enemyToFight.getHitPoints() +"HP)\n";
+
+        Random randomGenerator = new Random();
+        while (hero.getHitPoints() > 0 && enemyToFight.getHitPoints() > 0)
+        {
+            int chance = randomGenerator.nextInt(2);
+            int damage;
+            if (chance == 0)
+            {
+                //hero attacks enemy
+                damage = hero.getAttackPoints() - enemyToFight.getDefencePoints();
+                tempReport += "\n" + hero.getName() + " attacks " + enemyToFight.getName() + " with " + hero.getAttackPoints() + " attack points.";
+                tempReport += "\n" + enemyToFight.getName() + " defends attack from " + hero.getName() + " with " + enemyToFight.getDefencePoints() + " defence points.\n";
+                if (damage > 0)
+                    enemyToFight.setHitPoints(enemyToFight.getHitPoints() - damage);
+                else
+                    damage = 0;
+                tempReport += "\n" + enemyToFight.getName() + " suffered " + damage + " damage points. Remaining HP = " + enemyToFight.getHitPoints() +"\n\n";
+            }
+            else
+            {
+                //enemy attacks and hero
+                damage = enemyToFight.getAttackPoints() - hero.getDefencePoints();
+                tempReport += "\n" + enemyToFight.getName() + " attacks " + hero.getName() + " with " + enemyToFight.getAttackPoints() + " attack points.";
+                tempReport += "\n" + hero.getName() + " defends attack from " + enemyToFight.getName() + " with " + hero.getDefencePoints() + " defence points.\n";
+                if (damage > 0)
+                    hero.setHitPoints(hero.getHitPoints() - damage);
+                else
+                    damage = 0;
+                tempReport += "\n" + hero.getName() + " suffered " + damage + " damage points. Remaining HP = "+ hero.getHitPoints() +"\n\n";
+            }
+        }
+        if (hero.getHitPoints() > 0)
+        {
+            enemyToFight.setAlive(false);
+            tempReport += "\n\t\t" + hero.getName() + " won the fight";
+            //this means hero won the fight
+        }
+        else
+        {
+            tempReport += "\n\t\t" + hero.getName() + " won the fight";
+            gameState.setGameOver(true);
+            //enemy won the fight
+        }
+        gameState.setBattleReport(tempReport);
+    }
+
+
+
+    private boolean fightOrRun()
+    {
+        int chance;
+
+        Random randomGenerator = new Random();
+        chance = randomGenerator.nextInt(2) + 1;
+        if (chance == 1)
+            return true;
+        else
+            return false;
+    }
+
     private void movePlayer(Directions direction)
     {
         int x = gameState.getPlayer().getX();

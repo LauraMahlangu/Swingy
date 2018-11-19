@@ -29,9 +29,9 @@ public class Console implements View
         else if (stages == Stages.SELECTPLAYER)
             displaySelectPlayerView();
         else if (stages == Stages.DISPLAYFORCEDFIGHT)
-            ;//displayForcedFightView();
+            displayForcedFightView();
         else if (stages == Stages.DISPLAYFIGHTORRUN)
-            ;//displayDisplayFightToRun();
+            displayDisplayFightOrRun();
         else if (stages == Stages.DISPLAYMAP)
             displayMapView();
         else if (stages == Stages.GAMEOVER)
@@ -235,31 +235,34 @@ public class Console implements View
                             "East: d\n"
         );
 
-        //getting the choice
-        String choice = "";
-        Scanner userInput = new Scanner(System.in);
-        while (choice.equals(""))
+        //getting the movement choice only if enemy is not encountered, else just the map is drawn to show player movement
+        if (controller.getGameState().isEnemyEncountered() == false)
         {
-            System.out.print("Choice: ");
-            if (userInput.hasNextLine())
+            String choice = "";
+            Scanner userInput = new Scanner(System.in);
+            while (choice.equals(""))
             {
-                choice = userInput.nextLine();
-                if (choice.equals("w") || choice.equals("a") || choice.equals("s") || choice.equals("d"))
-                    break;
+                System.out.print("Choice: ");
+                if (userInput.hasNextLine())
+                {
+                    choice = userInput.nextLine();
+                    if (choice.equals("w") || choice.equals("a") || choice.equals("s") || choice.equals("d"))
+                        break;
+                }
+                else
+                {
+                    System.exit(0);
+                }
             }
+            if (choice.equals("w"))
+                controller.processInput(1);
+            else if (choice.equals("a"))
+                controller.processInput(2);
+            else if (choice.equals("s"))
+                controller.processInput(3);
             else
-            {
-                System.exit(0);
-            }
+                controller.processInput(4);
         }
-        if (choice.equals("w"))
-            controller.processInput(1);
-        else if (choice.equals("a"))
-            controller.processInput(2);
-        else if (choice.equals("s"))
-            controller.processInput(3);
-        else
-            controller.processInput(4);
     }
     public void displayErrorView()
     {
@@ -284,8 +287,55 @@ public class Console implements View
         controller.processInput(0);
     }
 
-    public void displayForcedFightView(){}
-    public void displayDisplayFightToRun(){}
+    public void displayForcedFightView()
+    {
+          System.out.println("\n********************************************************** \n" +
+                               "*                       Battle Results                   *\n" +
+                               "**********************************************************\n");
+
+          System.out.println(controller.getGameState().getBattleReport());
+          System.out.println("\nPress enter any key to continue to game: ");
+          Scanner userInput = new Scanner((System.in));
+          String pressed = "";
+         // char userInput;
+          if (userInput.hasNextLine())
+              pressed = userInput.nextLine();
+          else
+              System.exit(0);
+          controller.processInput(1);
+    }
+
+
+    public void displayDisplayFightOrRun()
+    {
+        System.out.print("\n*************************************************************\n" +
+                           "*                      Enemy Encountered                    *\n" +
+                           "*************************************************************\n\n" +
+                           "   1. Fight\n" +
+                           "   2. Run\n\n"
+        );
+
+        String choice = "";
+        int selectedInput = 0;
+        Scanner userInput = new Scanner(System.in);
+        while (choice.equals(""))
+        {
+            System.out.print("Choice: ");
+            if (userInput.hasNextLine())
+            {
+                choice = userInput.nextLine();
+                if (choice.equals("1"))
+                    selectedInput = 1;
+                else if (choice.equals("2"))
+                    selectedInput = 2;
+                else
+                    choice = "";
+            }
+            else
+                System.exit(0);
+        }
+        controller.processInput(selectedInput);
+    }
     public void displayGameOver(){}
     public void displaySavePlayerView(){}
 
