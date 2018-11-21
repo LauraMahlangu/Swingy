@@ -19,7 +19,6 @@ public class Console implements View
 
     public void displayStage(Stages stages)
     {
-        //todo add if-statements for all stages later. the view must know which functions to run for each stage
         if (stages == Stages.WELCOME)
             displayWelcomeView();
         else if (stages == Stages.CREATEPLAYER)
@@ -35,11 +34,10 @@ public class Console implements View
         else if (stages == Stages.DISPLAYMAP)
             displayMapView();
         else if (stages == Stages.GAMEOVER)
-            ;//displayGameOver();
+            displayGameOver();
         else
-           ; //displaySavePlayerView();
+            displaySavePlayerView();
     }
-
 
 
     public ArrayList<String> getPlayerDetailsFromUser()
@@ -232,7 +230,8 @@ public class Console implements View
         System.out.println("\nNorth: w\n" +
                             "West: a\n" +
                             "South: s\n" +
-                            "East: d\n"
+                            "East: d\n" +
+                            "Save player: x"
         );
 
         //getting the movement choice only if enemy is not encountered, else just the map is drawn to show player movement
@@ -246,7 +245,7 @@ public class Console implements View
                 if (userInput.hasNextLine())
                 {
                     choice = userInput.nextLine();
-                    if (choice.equals("w") || choice.equals("a") || choice.equals("s") || choice.equals("d"))
+                    if (choice.equals("w") || choice.equals("a") || choice.equals("s") || choice.equals("d") || choice.equals("x"))
                         break;
                 }
                 else
@@ -260,8 +259,10 @@ public class Console implements View
                 controller.processInput(2);
             else if (choice.equals("s"))
                 controller.processInput(3);
-            else
+            else if (choice.equals("d"))
                 controller.processInput(4);
+            else
+                controller.processInput(5);
         }
     }
     public void displayErrorView()
@@ -297,14 +298,12 @@ public class Console implements View
           System.out.println("\nPress enter any key to continue to game: ");
           Scanner userInput = new Scanner((System.in));
           String pressed = "";
-         // char userInput;
           if (userInput.hasNextLine())
               pressed = userInput.nextLine();
           else
               System.exit(0);
           controller.processInput(1);
     }
-
 
     public void displayDisplayFightOrRun()
     {
@@ -336,7 +335,80 @@ public class Console implements View
         }
         controller.processInput(selectedInput);
     }
-    public void displayGameOver(){}
-    public void displaySavePlayerView(){}
+
+    public void displayGameOver()
+    {
+        System.out.println("\n\n   _____                             ____                      _ \n" +
+                "  / ____|                           / __ \\                    | |\n" +
+                " | |  __   __ _  _ __ ___    ___   | |  | |__   __ ___  _ __  | |\n" +
+                " | | |_ | / _` || '_ ` _ \\  / _ \\  | |  | |\\ \\ / // _ \\| '__| | |\n" +
+                " | |__| || (_| || | | | | ||  __/  | |__| | \\ V /|  __/| |    |_|\n" +
+                "  \\_____| \\__,_||_| |_| |_| \\___|   \\____/   \\_/  \\___||_|    (_)\n" +
+                "                                                                ");
+
+        if (controller.getGameState().getPlayer().getHitPoints() > 0)
+            System.out.println("\n                                                _ \n" +
+                    "                                                | |\n" +
+                    "  _   _   ___   _   _   __      __ ___   _ __   | |\n" +
+                    " | | | | / _ \\ | | | |  \\ \\ /\\ / // _ \\ | '_ \\  | |\n" +
+                    " | |_| || (_) || |_| |   \\ V  V /| (_) || | | | |_|\n" +
+                    "  \\__, | \\___/  \\__,_|    \\_/\\_/  \\___/ |_| |_| (_)\n" +
+                    "   __/ |                                           \n" +
+                    "  |___/           \n");
+        else
+            System.out.println("         _              _     _ \n" +
+                    "                        | |            | |   | |\n" +
+                    "  _   _   ___   _   _   | |  ___   ___ | |_  | |\n" +
+                    " | | | | / _ \\ | | | |  | | / _ \\ / __|| __| | |\n" +
+                    " | |_| || (_) || |_| |  | || (_) |\\__ \\| |_  |_|\n" +
+                    "  \\__, | \\___/  \\__,_|  |_| \\___/ |___/ \\__| (_)\n" +
+                    "   __/ |                                        \n" +
+                    "  |___/                                        \n");
+        System.out.println("Continue to main screen: c\n" +
+                           "Quit : q"
+        );
+        Scanner userInput = new Scanner((System.in));
+        String pressed = "";
+        int selectedInput = 0;
+        while (pressed.equals(""))
+        {
+            System.out.print("Choice: ");
+            if (userInput.hasNextLine())
+            {
+                pressed = userInput.nextLine();
+                if (pressed.equals("c"))
+                    selectedInput = 1;//back o menu
+                else if (pressed.equals("q"))
+                    selectedInput = 2;//quit game
+                else
+                    pressed = "";
+
+            }
+            else
+                System.exit(0);
+        }
+        controller.processInput(selectedInput);
+    }
+
+    public void displaySavePlayerView()
+    {
+        System.out.println(" _____   _                                                         _   _ \n" +
+                " |  __ \\ | |                                                       | | | |\n" +
+                " | |__) || |  __ _  _   _   ___  _ __   ___   __ _ __   __ ___   __| | | |\n" +
+                " |  ___/ | | / _` || | | | / _ \\| '__| / __| / _` |\\ \\ / // _ \\ / _` | | |\n" +
+                " | |     | || (_| || |_| ||  __/| |    \\__ \\| (_| | \\ V /|  __/| (_| | |_|\n" +
+                " |_|     |_| \\__,_| \\__, | \\___||_|    |___/ \\__,_|  \\_/  \\___| \\__,_| (_)\n" +
+                "                     __/ |                                                \n" +
+                "                    |___/     ");
+
+        System.out.print("Press any key to continue: ");
+        Scanner userInput = new Scanner((System.in));
+        String pressed = "";
+        if (userInput.hasNextLine())
+            pressed = userInput.nextLine();
+        else
+            System.exit(0);
+        controller.processInput(1);
+    }
 
 }

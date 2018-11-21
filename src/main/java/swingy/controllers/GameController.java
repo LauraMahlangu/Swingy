@@ -72,20 +72,35 @@ public class GameController
                 break;
 
             case DISPLAYMAP:
-                if (value == 1)
-                    this.movePlayer(Directions.NORTH);
-                else if (value == 2)
-                    this.movePlayer(Directions.WEST);
-                else if (value == 3)
-                    this.movePlayer(Directions.SOUTH);
-                else
-                    this.movePlayer(Directions.EAST);
-                this.updateMap();
-                renderStage();
-                if (gameState.isEnemyEncountered() == true)
+
+                if (value == 5)
                 {
-                    stage = Stages.DISPLAYFIGHTORRUN;
+                    DataController.savePlayer(gameState.getPlayer());//saves player to db.
+                    stage = Stages.SAVEPLAYER;
+                    this.renderStage();
+                }
+                else
+                {
+                    if (value == 1)
+                        this.movePlayer(Directions.NORTH);
+                    else if (value == 2)
+                        this.movePlayer(Directions.WEST);
+                    else if (value == 3)
+                        this.movePlayer(Directions.SOUTH);
+                    else if (value == 4)
+                        this.movePlayer(Directions.EAST);
+                    this.updateMap();
                     renderStage();
+                    if (gameState.isGameOver())
+                    {
+                        stage = Stages.GAMEOVER;
+                        renderStage();
+                    }
+                    if (gameState.isEnemyEncountered() == true)
+                    {
+                        stage = Stages.DISPLAYFIGHTORRUN;
+                        renderStage();
+                    }
                 }
                 break;
 
@@ -128,9 +143,19 @@ public class GameController
                 break;
 
             case GAMEOVER:
+                if (value == 1)//gong back to welcome
+                    stage = Stages.WELCOME;
+                else//exiting
+                    System.exit(0);
+                this.renderStage();
                 break;
 
             case SAVEPLAYER:
+                if (value == 1)
+                {
+                    stage = Stages.DISPLAYMAP;
+                    renderStage();
+                }
                 break;
 
             case DISPLAYERRORS:
@@ -195,7 +220,6 @@ public class GameController
         return (allEnemies);
     }
 
-
     private void updateMap()
     {
         for (int row = 0; row < gameState.getPlayer().getMapSize(); row++)
@@ -216,9 +240,7 @@ public class GameController
         gameState.getMap()[gameState.getPlayer().getY()][gameState.getPlayer().getX()] = 'H';
     }
 
-   // private boolean isArtifactWon(){}
-   // private String createBattleReport(){} todo will be done in report factory
-   // private boolean isGameOver(){}
+   // private boolean isArtifactWon(){}// todo another time
     private void fight()
     {
 
@@ -270,14 +292,12 @@ public class GameController
         }
         else
         {
-            tempReport += "\n\t\t" + hero.getName() + " won the fight";
+            tempReport += "\n\t\t" + enemyToFight.getName() + " won the fight";
             gameState.setGameOver(true);
             //enemy won the fight
         }
         gameState.setBattleReport(tempReport);
     }
-
-
 
     private boolean fightOrRun()
     {
@@ -307,6 +327,13 @@ public class GameController
             gameState.getPlayer().setY(y + 1);
         else
             gameState.getPlayer().setX(x + 1);
-    }
 
+        //check if player reached boundary of the map
+
+        if (gameState.getPlayer().getX() <= 0 || gameState.getPlayer().getX() >= gameState.getPlayer().getMapSize())
+            gameState.setGameOver(true);
+        if (gameState.getPlayer().getY() <= 0 || gameState.getPlayer().getY() >= gameState.getPlayer().getMapSize())
+            gameState.setGameOver(true);
+
+    }
 }

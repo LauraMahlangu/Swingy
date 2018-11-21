@@ -72,7 +72,7 @@ public class DataController
                             "`level` INT NOT NULL , " +
                             "`exp` INT NOT NULL , " +
                             "`attackPoints` INT NOT NULL , " +
-                            "`defensePoints` INT NOT NULL , " +
+                            "`defencePoints` INT NOT NULL , " +
                             "`hitPoints` INT NOT NULL," +
                             "`x` INT NOT NULL," +
                             "`y` INT NOT NULL," +
@@ -118,12 +118,12 @@ public class DataController
                 int level = results.getInt("level");
                 int exp = results.getInt("exp");
                 int attackPoints = results.getInt("attackPoints");
-                int defensePoints = results.getInt("defensePoints");
+                int defencePoints = results.getInt("defencePoints");
                 int hitPoints = results.getInt("hitPoints");
                 int x = results.getInt("x");
                 int y = results.getInt("y");
                 int mapSize = results.getInt("mapSize");
-                Player player = new Player(name, type, level, exp, defensePoints, attackPoints, hitPoints, x, y, mapSize);
+                Player player = new Player(name, type, level, exp, defencePoints, attackPoints, hitPoints, x, y, mapSize);
                 allPlayers.add(player);
             }
         }
@@ -155,7 +155,7 @@ public class DataController
             connection = getConnection();
             Statement statement = connection.createStatement();
             String save = String.format("INSERT INTO `swingy`.`players` (`name`, `type`, `level`, `exp`," +
-                            " `attackPoints`, `defencePoint`, `hitPints`, `x`, `y`, `mapSize`) " +
+                            " `attackPoints`, `defencePoints`, `hitPoints`, `x`, `y`, `mapSize`) " +
                             " VALUES ('%s', '%s', %d, %d, %d, %d, %d, %d, %d, %d)",
                     player.getName(),
                     player.getType(),
