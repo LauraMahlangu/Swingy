@@ -91,17 +91,12 @@ public class GameController
                         this.movePlayer(Directions.EAST);
                     this.updateMap();
                     renderStage();
-                    if (gameState.isGameOver())
-                    {
-                        stage = Stages.GAMEOVER;
-                        renderStage();
-                    }
-                    if (gameState.isEnemyEncountered() == true)
-                    {
-                        stage = Stages.DISPLAYFIGHTORRUN;
-                        renderStage();
-                    }
                 }
+                if (gameState.isGameOver() == true)
+                    stage = Stages.GAMEOVER;
+                if (gameState.isEnemyEncountered() == true)
+                    stage = Stages.DISPLAYFIGHTORRUN;
+                renderStage();
                 break;
 
             case DISPLAYFIGHTORRUN:
@@ -330,9 +325,9 @@ public class GameController
 
         //check if player reached boundary of the map
 
-        if (gameState.getPlayer().getX() <= 0 || gameState.getPlayer().getX() >= gameState.getPlayer().getMapSize())
+        if (gameState.getPlayer().getX() == 0 || gameState.getPlayer().getX() == gameState.getPlayer().getMapSize() - 1)
             gameState.setGameOver(true);
-        if (gameState.getPlayer().getY() <= 0 || gameState.getPlayer().getY() >= gameState.getPlayer().getMapSize())
+        if (gameState.getPlayer().getY() == 0 || gameState.getPlayer().getY() == gameState.getPlayer().getMapSize() - 1)
             gameState.setGameOver(true);
 
     }

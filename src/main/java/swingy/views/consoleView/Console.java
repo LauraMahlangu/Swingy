@@ -235,7 +235,7 @@ public class Console implements View
         );
 
         //getting the movement choice only if enemy is not encountered, else just the map is drawn to show player movement
-        if (controller.getGameState().isEnemyEncountered() == false)
+        if (controller.getGameState().isEnemyEncountered() == false && controller.getGameState().isGameOver() == false)
         {
             String choice = "";
             Scanner userInput = new Scanner(System.in);
