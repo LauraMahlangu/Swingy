@@ -180,7 +180,7 @@ public class Console implements View
         controller.processInput(option);
     }
 
-    private void displayCreatePlayerView()
+    public void displayCreatePlayerView()
     {
         System.out.println("\n*********************************************\n"
                 +   "*               Create Player               *\n"

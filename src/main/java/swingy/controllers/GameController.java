@@ -30,8 +30,8 @@ public class GameController
         this.consoleView = consoleView;
         if (consoleView)
             view = new Console(this);
-        //else
-        //    view = new Gui();
+        else
+            view = new Gui(this);
         stage = Stages.WELCOME;
     }
 
@@ -249,7 +249,7 @@ public class GameController
 
         String tempReport = "\t\t"+hero.getName()+ "(" + hero.getType() + " : " + hero.getHitPoints() +"HP)  Verus " + enemyToFight.getName() + "(" + enemyToFight.getType() + " : " + enemyToFight.getHitPoints() +"HP)\n";
 
-        Random randomGenerator = new Random();
+         Random randomGenerator = new Random();
         while (hero.getHitPoints() > 0 && enemyToFight.getHitPoints() > 0)
         {
             int chance = randomGenerator.nextInt(2);
