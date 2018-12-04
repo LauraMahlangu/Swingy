@@ -10,6 +10,7 @@ import swingy.views.View;
 import swingy.views.consoleView.Console;
 import swingy.views.guiView.Gui;
 
+import javax.validation.constraints.Null;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
@@ -45,13 +46,15 @@ public class GameController
                 {
                     stage = Stages.CREATEPLAYER;
                     this.renderStage();
-                    initGameState(true);
+                    if (consoleView)
+                        initConsoleGameState(true);
                 }
                 else
                 {
                     stage = Stages.SELECTPLAYER;
                     this.renderStage();
-                    initGameState(false);
+                    if (consoleView)
+                        initConsoleGameState(false);
                 }
                 break;
 
@@ -67,6 +70,11 @@ public class GameController
                 if (value == 1)
                 {
                     stage = Stages.DISPLAYMAP;
+                    this.renderStage();
+                }
+                if (value == -1)
+                {
+                    stage = Stages.WELCOME;
                     this.renderStage();
                 }
                 break;
@@ -160,19 +168,38 @@ public class GameController
         }
     }
 
-    private void initGameState(boolean isNewPlayer)
+    public void initGuiGameState(ArrayList<String>  details,boolean isNewPlayer)
     {
-        Player hero;
+        if (isNewPlayer)
+        {
+            Player hero  = PlayerFactory.createPlayer(details, this);
+            if (hero == null)
+            {
+                stage = Stages.DISPLAYERRORS;
+                this.renderStage();
+            }
+            else
+            {
+                ArrayList<Enemy> enemies = generateEnemies(hero);
+                gameState = new GameState(hero, enemies);
+                updateMap();
+            }
+        }
+    }
+
+    private void initConsoleGameState(boolean isNewPlayer)
+    {
+        Player hero = null;
         if (isNewPlayer == true)
         {
             ArrayList<String> playerDetails; // this will be an arraylist that contains the name and type of the plaayer that the user supplied in the console e.g {"Laura",  "SuperGirl"}
-            playerDetails = view.getPlayerDetailsFromUser();
+            playerDetails = ((Console)view).getPlayerDetailsFromUser();
             hero = PlayerFactory.createPlayer(playerDetails, this);
         }
-        else
+        else if (isNewPlayer == false)
         {
             ArrayList<Player> savedPlayers = DataController.getAllPlayers();
-            hero = view.getPlayerFromSavedPlayers(savedPlayers);
+            hero = ((Console)view).getPlayerFromSavedPlayers(savedPlayers);
             if (PlayerFactory.isValid(hero, this) == false)// checks if chosen saved players is valid.
                 hero = null;
         }

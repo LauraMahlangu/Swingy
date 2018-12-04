@@ -8,15 +8,13 @@ import java.util.ArrayList;
 public interface View
 {
     void displayStage(Stages stage);
-    ArrayList<String> getPlayerDetailsFromUser();
-    Player getPlayerFromSavedPlayers(ArrayList<Player> savedPlayers);
     void displayWelcomeView();//todo done
-    void displayCreatePlayerView();//todo saturday
-    void displayErrorView();//todo saturday
-    void displaySelectPlayerView();//todo saturday
-    void displayForcedFightView();
-    void displayDisplayFightOrRun();
-    void displayMapView();//todo saturday
+    void displayCreatePlayerView();//todo done
+    void displayErrorView();//todo friday
+    void displaySelectPlayerView();//todo wednesday
+    void displayForcedFightView();//todo friday
+    void displayDisplayFightOrRun();//todo friday
+    void displayMapView();//todo thursday
     void displayGameOver();
     void displaySavePlayerView();
 }
