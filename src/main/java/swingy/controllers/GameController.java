@@ -64,6 +64,11 @@ public class GameController
                     stage = Stages.DISPLAYMAP;
                     this.renderStage();
                 }
+                if (value == -1)
+                {
+                    stage = Stages.WELCOME;
+                    this.renderStage();
+                }
                 break;
 
             case CREATEPLAYER:
@@ -168,22 +173,28 @@ public class GameController
         }
     }
 
-    public void initGuiGameState(ArrayList<String>  details,boolean isNewPlayer)
+    public void initGuiGameState(ArrayList<String>  details, boolean isNewPlayer, Player  player)
     {
+        Player hero;
         if (isNewPlayer)
+            hero  = PlayerFactory.createPlayer(details, this);
+        else
         {
-            Player hero  = PlayerFactory.createPlayer(details, this);
-            if (hero == null)
-            {
-                stage = Stages.DISPLAYERRORS;
-                this.renderStage();
-            }
+            if (PlayerFactory.isValid(player, this) == false)// checks if chosen saved players is valid.
+                hero = null;
             else
-            {
-                ArrayList<Enemy> enemies = generateEnemies(hero);
-                gameState = new GameState(hero, enemies);
-                updateMap();
-            }
+                hero = player;
+        }
+        if (hero == null)
+        {
+            stage = Stages.DISPLAYERRORS;
+            this.renderStage();
+        }
+        else
+        {
+            ArrayList<Enemy> enemies = generateEnemies(hero);
+            gameState = new GameState(hero, enemies);
+            updateMap();
         }
     }
 
