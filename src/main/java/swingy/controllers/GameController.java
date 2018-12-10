@@ -41,7 +41,7 @@ public class GameController
         switch (stage)
         {
             case WELCOME:
-                ArrayList<Player> enemies;
+
                 if (value == 1)
                 {
                     stage = Stages.CREATEPLAYER;
@@ -173,7 +173,7 @@ public class GameController
         }
     }
 
-    public void initGuiGameState(ArrayList<String>  details, boolean isNewPlayer, Player  player)
+    public boolean initGuiGameState(ArrayList<String>  details, boolean isNewPlayer, Player  player)
     {
         Player hero;
         if (isNewPlayer)
@@ -189,12 +189,14 @@ public class GameController
         {
             stage = Stages.DISPLAYERRORS;
             this.renderStage();
+            return (false);
         }
         else
         {
             ArrayList<Enemy> enemies = generateEnemies(hero);
             gameState = new GameState(hero, enemies);
             updateMap();
+            return (true);
         }
     }
 
