@@ -8,13 +8,13 @@ import java.util.ArrayList;
 public interface View
 {
     void displayStage(Stages stage);
-    void displayWelcomeView();//todo done
-    void displayCreatePlayerView();//todo done
-    void displayErrorView();//todo friday
-    void displaySelectPlayerView();//todo wednesday
-    void displayForcedFightView();//todo friday
-    void displayDisplayFightOrRun();//todo friday
-    void displayMapView();//todo thursday
+    void displayWelcomeView();
+    void displayCreatePlayerView();
+    void displayErrorView();
+    void displaySelectPlayerView();
+    void displayForcedFightView();
+    void displayDisplayFightOrRun();
+    void displayMapView();
     void displayGameOver();
     void displaySavePlayerView();
 }

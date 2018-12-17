@@ -39,7 +39,6 @@ public class Console implements View
             displaySavePlayerView();
     }
 
-
     public ArrayList<String> getPlayerDetailsFromUser()
     {
         ArrayList<String> details = new ArrayList<>();

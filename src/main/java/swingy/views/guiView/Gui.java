@@ -15,8 +15,9 @@ import java.awt.*;
 
 public class Gui implements View
 {
-    private boolean mapInitialied = false;
+    public static boolean mapInitialied = false;
     JFrame mapframe;
+    JPanel gridPanel;
     private GameController controller;
     private ArrayList<String> createUserDetails;
 
@@ -45,7 +46,7 @@ public class Gui implements View
             displayMapView();
         else if (stages == Stages.GAMEOVER)
             displayGameOver();
-        else
+        else if(stages == Stages.SAVEPLAYER)
             displaySavePlayerView();
     }
 
@@ -433,7 +434,6 @@ public class Gui implements View
         frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
     }
 
-
     private void drawMap(char[][] map, int mapSize, JPanel panel)
     {
         panel.removeAll();
@@ -469,111 +469,316 @@ public class Gui implements View
 
     public void displayMapView()
     {
-        if (!mapInitialied)
-           mapframe = new JFrame("Swingy");
-        JButton btnNorth =  new JButton("^");
-        JButton btnSouth=  new JButton("v");
-        JButton btnEast =  new JButton(">");
-        JButton btnWest =  new JButton("<");
+        if (!mapInitialied) {
+            mapInitialied = true;
+            mapframe = new JFrame("Swingy");
+            JButton btnNorth = new JButton("^");
+            JButton btnSouth = new JButton("v");
+            JButton btnEast = new JButton(">");
+            JButton btnWest = new JButton("<");
+            final JPanel panel = new JPanel();
+            gridPanel = new JPanel();
+            final JComboBox optionsDisplay;
+            JLabel playerDataLabel = new JLabel();
+
+
+            String[] options = {"Options", "Save Game", "Quit"};
+            optionsDisplay = new JComboBox(options);
+            optionsDisplay.setSelectedIndex(0);
+
+            //      add to panel
+            panel.add(gridPanel);
+            panel.add(btnNorth);
+            panel.add(btnSouth);
+            panel.add(btnEast);
+            panel.add(btnWest);
+            panel.add(optionsDisplay);
+            panel.add(playerDataLabel);
+
+            //player datails
+            playerDataLabel.setText("Name: " + controller.getGameState().getPlayer().getName()
+                    + ", Class: " + controller.getGameState().getPlayer().getType()
+                    + ", Level: " + controller.getGameState().getPlayer().getLevel()
+                    + ", EPR: " + controller.getGameState().getPlayer().getExp()
+                    + ", Defence: " + controller.getGameState().getPlayer().getDefencePoints()
+                    + ", Attack: " + controller.getGameState().getPlayer().getAttackPoints()
+                    + ", HitPoints: " + controller.getGameState().getPlayer().getHitPoints()
+                    + ", X : " + controller.getGameState().getPlayer().getX()
+                    + ", Y : " + controller.getGameState().getPlayer().getY()
+                    + ", MapSize: " + controller.getGameState().getPlayer().getMapSize());
+
+            //      set boundaries
+            playerDataLabel.setBounds(20, 10, 860, 20);
+            optionsDisplay.setBounds(390, 630, 120, 20);
+            btnNorth.setBounds(440, 560, 20, 20);
+            btnSouth.setBounds(440, 600, 20, 20);
+            btnEast.setBounds(460, 580, 20, 20);
+            btnWest.setBounds(420, 580, 20, 20);
+            gridPanel.setBounds(20, 60, 860, 480);
+
+            //set listeners
+            btnNorth.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    controller.processInput(1);
+                }
+            });
+            btnWest.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    controller.processInput(2);
+
+                }
+            });
+            btnSouth.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    controller.processInput(3);
+                }
+            });
+            btnEast.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    controller.processInput(4);
+                }
+            });
+            optionsDisplay.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (optionsDisplay.getSelectedIndex() == 1)
+                        controller.processInput(5);
+                    else if (optionsDisplay.getSelectedIndex() == 2)
+                        System.exit(0);
+                }
+            });
+
+            mapframe.setContentPane(panel);
+            mapframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            mapframe.setLocationRelativeTo(null);
+            mapframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            mapframe.setPreferredSize(new Dimension(900, 700));
+            mapframe.setResizable(false);
+            mapframe.setLayout(null);
+            mapframe.pack();
+            mapframe.setVisible(true);
+            Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+            mapframe.setLocation(dim.width / 2 - mapframe.getSize().width / 2, dim.height / 2 - mapframe.getSize().height / 2);
+            drawMap(controller.getGameState().getMap(), controller.getGameState().getPlayer().getMapSize(), gridPanel);
+        }
+
+        else
+            drawMap(controller.getGameState().getMap(), controller.getGameState().getPlayer().getMapSize(), gridPanel);
+    }
+
+    public void displayForcedFightView()
+    {
+        mapframe.setEnabled(false);
+        final JFrame frame = new JFrame("Battle Report");
+        JButton btnContinue = new JButton("Continue");
         final JPanel panel = new JPanel();
-        final JPanel gridPanel =  new JPanel();
-        final JComboBox optionsDisplay;
-        JLabel playerDataLabel = new JLabel();
+        JLabel headingLabel = new JLabel("Battle report");
+        final JTextArea dataDisplay = new JTextArea();
+        JScrollPane jScrollPane;
 
-
-        String[] options = {"Options", "Save Game", "Quit"};
-        optionsDisplay = new JComboBox(options);
-        optionsDisplay.setSelectedIndex(0);
+        jScrollPane = new  JScrollPane(dataDisplay);
+        dataDisplay.setEditable(false);
+        dataDisplay.setText(controller.getGameState().getBattleReport());
 
 //      add to panel
 
-        panel.add(gridPanel);
-        panel.add(btnNorth);
-        panel.add(btnSouth);
-        panel.add(btnEast);
-        panel.add(btnWest);
-        panel.add(optionsDisplay);
-        panel.add(playerDataLabel);
-
-        //player datails
-        playerDataLabel.setText("Name: " + controller.getGameState().getPlayer().getName()
-                + ", Class: " + controller.getGameState().getPlayer().getType()
-                + ", Level: " + controller.getGameState().getPlayer().getLevel()
-                +  ", EPR: " + controller.getGameState().getPlayer().getExp()
-                +  ", Defence: " + controller.getGameState().getPlayer().getDefencePoints()
-                +  ", Attack: " + controller.getGameState().getPlayer().getAttackPoints()
-                +  ", HitPoints: " + controller.getGameState().getPlayer().getHitPoints()
-                +  ", X : " + controller.getGameState().getPlayer().getX()
-                +  ", Y : " + controller.getGameState().getPlayer().getY()
-                +  ", MapSize: " + controller.getGameState().getPlayer().getMapSize());
+        panel.add(btnContinue);
+        panel.add(headingLabel);
+        panel.add(jScrollPane);
 
 //      set boundaries
-        playerDataLabel.setBounds(20, 10 ,860,20);
-        optionsDisplay.setBounds(390, 630, 120, 20);
-        btnNorth.setBounds(440, 560 ,20,20);
-        btnSouth.setBounds(440, 600 ,20,20);
-        btnEast.setBounds(460, 580 ,20,20);
-        btnWest.setBounds(420, 580 ,20,20);
-        gridPanel.setBounds(20, 60, 860, 480);
+        headingLabel.setBounds(230, 10 ,150,20);
+        jScrollPane.setBounds(50, 40, 500,650);
+        btnContinue.setBounds(250, 700 ,100,20);
 
-        //set listeners
-
-        btnNorth.addActionListener(new ActionListener()
+//      set listeners
+        btnContinue.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
+                frame.dispose();
+                mapframe.setEnabled(true);
                 controller.processInput(1);
-                drawMap(controller.getGameState().getMap(), controller.getGameState().getPlayer().getMapSize(), gridPanel);
-            }
-        });
-        btnWest.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                controller.processInput(2);
-
-                //drawMap(controller.getGameState().getMap(), controller.getGameState().getPlayer().getMapSize(), gridPanel);
-            }
-        });
-        btnSouth.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                controller.processInput(3);
-                controller.renderStage();
-                //drawMap(controller.getGameState().getMap(), controller.getGameState().getPlayer().getMapSize(), gridPanel);
-            }
-        });
-        btnEast.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                controller.processInput(4);
-                controller.renderStage();//drawMap(controller.getGameState().getMap(), controller.getGameState().getPlayer().getMapSize(), gridPanel);
             }
         });
 
-        mapframe.setContentPane(panel);
-        mapframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mapframe.setLocationRelativeTo(null);
-        mapframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mapframe.setPreferredSize(new Dimension(900, 700));
-        mapframe.setResizable(false);
-        mapframe.setLayout(null);
-        mapframe.pack();
-        mapframe.setVisible(true);
+        //setting up frame for display
+        frame.setContentPane(panel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setPreferredSize(new Dimension(600, 750));
+        frame.setResizable(false);
+        frame.setLayout(null);
+        frame.pack();
+        frame.setVisible(true);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        mapframe.setLocation(dim.width/2-mapframe.getSize().width/2, dim.height/2-mapframe.getSize().height/2);
-        drawMap(controller.getGameState().getMap(), controller.getGameState().getPlayer().getMapSize(), gridPanel);
+        frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
+
     }
 
-    public void displayForcedFightView(){}
-    public void displayDisplayFightOrRun(){}
-    public void displayGameOver(){}
-    public void displaySavePlayerView(){}
+
+    public void displayDisplayFightOrRun()
+    {
+        mapframe.setEnabled(false);
+        final JFrame frame = new JFrame("Fight or Run");
+        JPanel panel = new JPanel();
+        JLabel label = new JLabel("You've encountered an enemy!");
+        JButton runButton = new JButton("Run");
+        JButton fightButton = new JButton("Fight");
+
+
+
+        //adding to oanel
+        panel.add(label);
+        panel.add(runButton);
+        panel.add(fightButton);
+        //adding to listeners
+        runButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                mapframe.setEnabled(true);
+                controller.processInput(2);
+            }
+        });
+
+        fightButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                controller.processInput(1);
+            }
+        });
+
+
+        //setting boundaries
+        label.setBounds(70, 20, 250, 20);
+        fightButton.setBounds(70, 60, 100,20);
+        runButton.setBounds(180, 60, 100,20);
+
+
+        frame.setContentPane(panel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setPreferredSize(new Dimension(350, 120));
+        frame.setResizable(false);
+        frame.setLayout(null);
+        frame.pack();
+        frame.setVisible(true);
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
+
+    }
+
+    public void displayGameOver()
+    {
+        mapframe.setEnabled(false);
+        final JFrame frame = new JFrame("Game Over");
+        JPanel panel = new JPanel();
+        JLabel label = new JLabel();
+        JButton quitButton = new JButton("Quit Game");
+        JButton menuButton = new JButton("Main Menu");
+
+        //adding to oanel
+        panel.add(label);
+        panel.add(quitButton);
+        panel.add(menuButton);
+        //adding to listeners
+        menuButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                mapframe.dispose();
+                mapframe.setEnabled(true);
+                mapInitialied = false;
+                controller.processInput(1);
+            }
+        });
+
+        quitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                mapframe.dispose();
+                mapframe.setEnabled(true);
+                mapInitialied = false;
+                controller.processInput(0);
+            }
+        });
+
+        if (controller.getGameState().getPlayer().getHitPoints() > 0)
+            label.setText("Game Over! You Won");
+        else
+            label.setText("Game Over! You Lost");
+
+        //setting boundaries
+        label.setBounds(50, 20, 150, 20);
+        menuButton.setBounds(20, 60, 100,20);
+        quitButton.setBounds(130, 60, 100,20);
+
+
+        frame.setContentPane(panel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setPreferredSize(new Dimension(250, 120));
+        frame.setResizable(false);
+        frame.setLayout(null);
+        frame.pack();
+        frame.setVisible(true);
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
+
+    }
+
+    public void displaySavePlayerView()
+    {
+
+        mapframe.setEnabled(false);
+        final JFrame frame = new JFrame("Save Game");
+        JPanel panel = new JPanel();
+        JLabel label = new JLabel("PLAYER SAVED!");
+        JButton okButton = new JButton("OK");
+
+        //adding to oanel
+        panel.add(label);
+        panel.add(okButton);
+
+        //adding to listeners
+        okButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                mapframe.setEnabled(true);
+                controller.processInput(1);
+            }
+        });
+
+
+        //setting boundaries
+        label.setBounds(20, 20, 120, 20);
+        okButton.setBounds(55, 60, 40,20);
+
+
+        frame.setContentPane(panel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setPreferredSize(new Dimension(150, 100));
+        frame.setResizable(false);
+        frame.setLayout(null);
+        frame.pack();
+        frame.setVisible(true);
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setLocation(dim.width/2-frame.getSize().width/2, dim.height/2-frame.getSize().height/2);
+
+    }
 
 }

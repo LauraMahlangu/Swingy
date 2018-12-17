@@ -10,7 +10,6 @@ import swingy.views.View;
 import swingy.views.consoleView.Console;
 import swingy.views.guiView.Gui;
 
-import javax.validation.constraints.Null;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
@@ -287,7 +286,7 @@ public class GameController
                 enemyToFight = enemy;
         }
 
-        String tempReport = "\t\t"+hero.getName()+ "(" + hero.getType() + " : " + hero.getHitPoints() +"HP)  Verus " + enemyToFight.getName() + "(" + enemyToFight.getType() + " : " + enemyToFight.getHitPoints() +"HP)\n";
+        String tempReport = "\t"+hero.getName()+ "(" + hero.getType() + " : " + hero.getHitPoints() +"HP)  Verus " + enemyToFight.getName() + "(" + enemyToFight.getType() + " : " + enemyToFight.getHitPoints() +"HP)\n";
 
          Random randomGenerator = new Random();
         while (hero.getHitPoints() > 0 && enemyToFight.getHitPoints() > 0)
